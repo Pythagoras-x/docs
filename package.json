@@ -27,8 +27,8 @@
     "test": "npm run check:snippets && npm run check:nav-coverage && npm run check:contract-registry && npm run check:compatibility-matrix && npm run test:redirects-and-anchors"
   },
   "dependencies": {
-    "@solana/web3.js": "^1.95.0",
-    "@stellar/stellar-sdk": "^13.1.0",
+    "@solana/web3.js": "^1.99.0",
+    "@stellar/stellar-sdk": "^13.3.0",
     "@wraith-protocol/sdk": "1.4.5"
   },
   "devDependencies": {
@@ -38,5 +38,19 @@
     "js-yaml": "4.3.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "axios@<1.20.0": ">=1.20.0",
+      "toml@<4.2.0": "^4.2.0",
+      "uuid@<11.1.1": "^11.1.1"
+    },
+    "auditConfig": {
+      "ignoreGhsas": [
+        "GHSA-528h-pc64-c93x",
+        "GHSA-hqr4-qq8f-hg3x",
+        "GHSA-mjw6-4jj6-33hc"
+      ]
+    }
   }
 }
