@@ -69,6 +69,9 @@ jobs:
       - name: Check snippets
         run: pnpm run check:snippets
 
+      - name: Check integration guides
+        run: pnpm run check:integration-guides
+
       - name: Check placeholders
         run: pnpm run check:placeholders
 

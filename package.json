@@ -6,6 +6,7 @@
     "check:placeholders": "tsx scripts/check-placeholders.ts",
     "check:snippets": "tsx scripts/check-snippets.ts && tsx scripts/check-api-examples.ts",
     "check:api-examples": "tsx scripts/check-api-examples.ts",
+    "check:integration-guides": "tsx scripts/check-integration-guides.ts",
     "check:snippets-extended": "tsx scripts/check-snippets-extended.ts && npm run check:python-quickstart",
     "check:python-quickstart": "tsx scripts/python-quickstart/generate-vectors.ts --check && python3 scripts/python-quickstart/run_quickstart.py --bootstrap",
     "generate:python-quickstart-vectors": "tsx scripts/python-quickstart/generate-vectors.ts",
@@ -24,7 +25,7 @@
     "test:playground": "playwright test --config scripts/playground/tests/playwright.config.ts",
     "mint:validate": "mint validate",
     "mint:broken-links": "mint broken-links",
-    "test": "npm run check:snippets && npm run check:nav-coverage && npm run check:contract-registry && npm run check:compatibility-matrix && npm run test:redirects-and-anchors"
+    "test": "npm run check:snippets && npm run check:integration-guides && npm run check:nav-coverage && npm run check:contract-registry && npm run check:compatibility-matrix && npm run test:redirects-and-anchors"
   },
   "dependencies": {
     "@solana/web3.js": "^1.95.0",
