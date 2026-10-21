@@ -37,10 +37,35 @@ const contractTitles: Record<string, string> = {
 
 const args = new Set(process.argv.slice(2));
 const checkMode = args.has("--check");
-const allowMissing = args.has("--allow-missing");
+// --allow-missing is no longer accepted; the flag is rejected so stale CI
+// invocations surface immediately rather than silently passing.
+if (args.has("--allow-missing")) {
+  throw new Error(
+    "--allow-missing has been removed. Supply STELLAR_CONTRACT_IDS or STELLAR_BINDINGS_DIR so the check has real data.",
+  );
+}
+
+// --require-contracts=slug1,slug2 asserts that every listed slug appears in
+// the generated reference. Use this in CI to catch gaps when a new contract
+// is deployed but the docs section was never generated.
+const requireContractsFlag = [...args].find((a) => a.startsWith("--require-contracts="));
+const requiredContracts: string[] =
+  requireContractsFlag ? requireContractsFlag.slice("--require-contracts=".length).split(",").filter(Boolean) : [];
 
 function main() {
   const references = loadReferencesOrExit();
+
+  if (requiredContracts.length > 0) {
+    const generatedSlugs = new Set(references.map((r) => r.slug));
+    const missing = requiredContracts.filter((slug) => !generatedSlugs.has(slug));
+    if (missing.length > 0) {
+      throw new Error(
+        `Required contract(s) missing from generated reference: ${missing.join(", ")}.\n` +
+          "Add the contract to STELLAR_CONTRACT_IDS or STELLAR_BINDINGS_DIR and re-run.",
+      );
+    }
+  }
+
   const generated = renderReference(references);
   const current = readFileSync(stellarDocPath, "utf8");
   const updated = replaceBetweenMarkers(current, generated);
@@ -61,11 +86,6 @@ function loadReferencesOrExit(): ContractReference[] {
   try {
     return loadReferences();
   } catch (error) {
-    if (checkMode && allowMissing) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.warn(`Skipping Stellar reference check: ${message}`);
-      process.exit(0);
-    }
     throw error;
   }
 }
