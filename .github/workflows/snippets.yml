@@ -243,7 +243,7 @@ jobs:
         # Update this pin when the CLI interface changes in a way that affects
         # `stellar contract inspect` output parsing.
         run: |
-          curl -sSfL https://github.com/stellar/stellar-cli/releases/download/v21.5.0/stellar-cli-v21.5.0-x86_64-unknown-linux-gnu.tar.gz \
+          curl -sSfL https://github.com/stellar/stellar-cli/releases/download/v28.1.0/stellar-cli-28.1.0-x86_64-unknown-linux-gnu.tar.gz \
             | tar -xz -C /usr/local/bin stellar
           stellar version
 
