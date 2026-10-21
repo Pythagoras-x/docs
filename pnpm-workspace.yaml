@@ -1,27 +1,24 @@
-allowBuilds:
-  bufferutil: false
-  esbuild: true
-  utf-8-validate: false
-
 overrides:
-  # Lift axios transitive dep to a patched release.
-  # @stellar/stellar-sdk ships axios which previously pulled in
-  # follow-redirects@1.16.0 (GHSA-q3jh-wrc6-jgq8, GHSA-8r9p-f939-6h3c).
-  axios: ">=1.20.0"
-  follow-redirects: ">=1.16.1"
-  # toml <4.2.0 has uncontrolled recursion (GHSA-82x6-q7mm-w9cf) and
-  # prototype pollution (GHSA-v5mp-jgw5-2x6j). @stellar/stellar-sdk depends
-  # on it transitively; lift to the patched release.
-  toml: ">=4.2.0"
-  # uuid <11.1.1 has a moderate advisory on the Solana path; keep pinned.
-  uuid: ">=11.1.1"
+  # Lift axios past the SSRF advisory before @stellar/stellar-sdk ships a fix.
+  "axios@<1.20.0": ">=1.20.0"
+  # Lift follow-redirects past the two high credential-stripping CVEs
+  # (GHSA-q3jh-wrc6-jgq8, GHSA-8r9p-f939-6h3c) via @stellar/stellar-sdk > axios.
+  "follow-redirects@<1.16.1": ">=1.16.1"
+  # Lift toml past the uncontrolled recursion and prototype pollution highs
+  # (GHSA-82x6-q7mm-w9cf, GHSA-v5mp-jgw5-2x6j) via @stellar/stellar-sdk.
+  "toml@<4.2.0": "^4.2.0"
+  # Lift uuid past the insecure randomness advisory via @solana/web3.js.
+  "uuid@<11.1.1": "^11.1.1"
 
 auditConfig:
   ignoreGhsas:
-    # stream-json advisories on the @solana/web3.js > jayson path.
-    # Patched releases are ESM-only and incompatible with jayson@4's
-    # require() calls. The affected stream operators are not used by jayson.
-    # Remove these entries once @solana/web3.js or jayson ships a fix.
+    # stream-json via @solana/web3.js > jayson — patched releases are ESM-only
+    # and break jayson's require() of subpaths it doesn't use. See DEPENDENCY-POLICY.md.
     - GHSA-528h-pc64-c93x
     - GHSA-hqr4-qq8f-hg3x
     - GHSA-mjw6-4jj6-33hc
+
+allowBuilds:
+  bufferutil: true
+  esbuild: true
+  utf-8-validate: true
